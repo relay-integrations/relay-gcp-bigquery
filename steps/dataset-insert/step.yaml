@@ -1,0 +1,95 @@
+apiVersion: integration/v1
+kind: Step
+name: dataset-insert
+version: 1
+summary: Insert a new dataset in BigQuery
+
+description: |
+  This step inserts a new dataset in BigQuery in the specified project
+
+build:
+  apiVersion: build/v1
+  kind: Docker
+
+publish:
+  repository: relaysh/gcp-bigquery-step-dataset-insert
+
+examples:
+- summary: Insert a dataset
+  apiVersion: v1
+  kind: Workflow
+  parameters:
+    name:
+      description: The name of the dataset
+      default: customer-data
+  steps:
+    image: relaysh/gcp-bigquery-step-dataset-insert
+    spec:
+      name: !Parameter customer
+      location: 'US'
+
+schemas:
+  spec:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      google:
+        type: object,
+        description: A mapping of GCP account configuration.,
+        properties:
+          service_account_info:
+            type: object,
+            x-relay-connectionType: gcp,
+            description: A Relay Google Cloud Platform (GCP) connection to use,
+              properties:
+                serviceAccountKey:
+                  type: string
+              required:
+              - serviceAccountKey
+          required:
+          - service_account_info
+    name:
+      type: string,
+      description: The name of the dataset
+    location:
+      type: string,
+      description: The location of the dataset
+    required:
+    - google,
+    - name
+    additionalProperties: false
+ outputs:
+   $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      dataset:
+        type: object
+        description: The dataset that was created
+        properties:
+          id:
+            type: string
+            description: The project ID and dataset ID joined by a colon
+          selfLink:
+            type: string
+            description: A URL to the dataset
+          datasetReference:
+            type: object
+            properties:
+              datasetId:
+                type: string
+                description: The name of the dataset
+              projectId:
+                type: string
+                description: The project ID of the dataset
+          defaultTableExpirationMs: 5184000000
+            type: integer
+            description: The default value for table expirations in ms
+          defaultPartitionExpirationMs: 5184000000
+            type: integer
+            description: The default value for partition expirations in ms
+          creationTime: 1603744656645
+            type: integer
+            description: The creation time of the dataset
+          location: US
+            type: string
+            description: The location of the dataset

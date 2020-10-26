@@ -1,15 +1,15 @@
 apiVersion: integration/v1
 kind: Integration
-name: template
+name: gcp-bigquery
 channel: stable
 version: v20200514
-summary: Integration template
+summary: Google Cloud Platform BigQuery
 license: Apache-2.0
-homepage: https://github.com/relay-integrations/template
-source: https://github.com/relay-integrations/template
+homepage: https://github.com/relay-integrations/relay-gcp-bigquery
+source: https://github.com/relay-integrations/relay-gcp-bigquery
 
 description: |
-  This is a template for creating a Relay Integration repository.
+  Google Cloud Platform's BigQuery is a fully-managed, serverless data warehouse that enables scalable analysis over petabytes of data.
 
 owner:
   name: Puppet, Inc.
@@ -17,5 +17,6 @@ owner:
   url: https://puppet.com
 
 tags:
-- template
+- gcp
+- data
 - relay integration
