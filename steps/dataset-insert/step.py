@@ -11,10 +11,6 @@ def slice(orig, keys):
     return {key: orig[key] for key in keys if key in orig}
 
 
-def slice_arr(orig, keys):
-    return [slice(obj, keys) for obj in orig]
-
-
 def do_insert_dataset(bigquery, project_id, body):
     print("Inserting dataset...")
     result = bigquery.datasets().insert(projectId=project_id, body=body).execute()
@@ -94,7 +90,7 @@ def insert_dataset():
         "location",
     ]
 
-    return slice_arr(dataset, dataset_keys)
+    return slice(dataset, dataset_keys)
 
 
 if __name__ == "__main__":
