@@ -23,9 +23,12 @@ examples:
       description: The name of the dataset
       default: customer-data
   steps:
+  - name: insert dataset
     image: relaysh/gcp-bigquery-step-dataset-insert
     spec:
-      name: !Parameter customer
+      google:
+        service_account_info: !Connection { type: gcp, name: my-gcp-account }
+      name: !Parameter name
       location: 'US'
 
 schemas:

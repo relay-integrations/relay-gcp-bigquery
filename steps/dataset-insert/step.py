@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import json, sys
 import googleapiclient.discovery
 
