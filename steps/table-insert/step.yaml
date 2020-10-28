@@ -1,0 +1,113 @@
+apiVersion: integration/v1
+kind: Step
+name: table-insert
+version: 1
+summary: Insert a new table in BigQuery
+
+description: |
+  This step inserts a new table in BigQuery in the specified project and dataset
+
+build:
+  apiVersion: build/v1
+  kind: Docker
+
+publish:
+  repository: relaysh/gcp-bigquery-step-table-insert
+
+examples:
+- summary: Insert a table
+  apiVersion: v1
+  kind: Workflow
+  parameters:
+    dataset_name:
+      description: The name of the dataset
+      default: customer-data
+    name:
+      description: The name of the table
+      default: customer-foo
+  steps:
+  - name: insert table
+    image: relaysh/gcp-bigquery-step-table-insert
+    spec:
+      google:
+        service_account_info: !Connection { type: gcp, name: my-gcp-account }
+      name: !Parameter table_name
+      dataset_id: !Parameter dataset_name
+      location: 'US'
+
+schemas:
+  spec:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      google:
+        type: object,
+        description: A mapping of GCP account configuration.,
+        properties:
+          service_account_info:
+            type: object,
+            x-relay-connectionType: gcp,
+            description: A Relay Google Cloud Platform (GCP) connection to use,
+              properties:
+                serviceAccountKey:
+                  type: string
+              required:
+              - serviceAccountKey
+          required:
+          - service_account_info
+    dataset_id:
+      type: string,
+      description: The name of the dataset for the new table
+    name:
+      type: string,
+      description: The name of the table
+    description:
+      type: string,
+      description: The description of the table
+    schema:
+      type: string,
+      description: The schema of the new table
+    required:
+    - google,
+    - dataset_id
+    - name
+    additionalProperties: false
+ outputs:
+   $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      table:
+        type: object
+        description: The table that was created
+        properties:
+          id:
+            type: string
+            description: The project ID and dataset ID joined by a colon
+          selfLink:
+            type: string
+            description: A URL to the table
+          tableReference:
+            type: object
+            properties:
+              tableId:
+                type: string
+                description: The name of the table
+              datasetId:
+                type: string
+                description: The name of the dataset of the table
+              projectId:
+                type: string
+                description: The project ID of the table
+            description: The default value for table expirations in ms
+          description:
+            type: string
+            description: The description of the table
+          schema:
+            type: string
+            description: The schema of the table
+          creationTime:
+            type: integer
+            description: The creation time of the table
+          location:
+            type: string
+            description: The location of the table
