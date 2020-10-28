@@ -55,8 +55,6 @@ def insert_table(connection, dataset_id, name, schema, description):
         }
     }
 
-    if location is not None:
-        body['location'] = location
     if description is not None:
         body['description'] = description
 
@@ -89,7 +87,6 @@ if __name__ == "__main__":
     connection = relay.get(D.google.service_account_info)
     dataset_id = relay.get(D.dataset_id)
     name = relay.get(D.name)
-    location = relay.get(D.location)
     description = relay.get(D.description)
     schema = relay.get(D.schema)
 
@@ -100,7 +97,7 @@ if __name__ == "__main__":
         print("Missing `name` parameter on step configuration.")
         sys.exit(1)
 
-    table = insert_table(connection, dataset_id, name, location, description)
+    table = insert_table(connection, dataset_id, name, schema, description)
     if table is None:
         print('table failed insert!')
         sys.exit(1)
