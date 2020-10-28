@@ -40,8 +40,8 @@ def insert_dataset():
     location = relay.get(D.location)
     description = relay.get(D.description)
 
-    if not id:
-        print("Missing `id` parameter on step configuration.")
+    if not name:
+        print("Missing `name` parameter on step configuration.")
         sys.exit(1)
 
     print("Getting service account info...")

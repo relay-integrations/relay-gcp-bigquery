@@ -87,15 +87,18 @@ schemas:
               projectId:
                 type: string
                 description: The project ID of the dataset
-          defaultTableExpirationMs: 5184000000
+          description:
+            type: string
+            description: The description of the dataset
+          defaultTableExpirationMs:
             type: integer
             description: The default value for table expirations in ms
-          defaultPartitionExpirationMs: 5184000000
+          defaultPartitionExpirationMs:
             type: integer
             description: The default value for partition expirations in ms
-          creationTime: 1603744656645
+          creationTime:
             type: integer
             description: The creation time of the dataset
-          location: US
+          location:
             type: string
             description: The location of the dataset
