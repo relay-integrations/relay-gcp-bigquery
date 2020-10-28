@@ -1,5 +1,5 @@
 FROM relaysh/core:latest-python
-RUN pip install google-api-python-client
+RUN pip install google-api-python-client oauth2client
 COPY "./step.py" "/entrypoint.py"
 ENTRYPOINT []
 CMD ["python3", "/entrypoint.py"]
