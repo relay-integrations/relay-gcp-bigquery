@@ -87,7 +87,7 @@ if __name__ == "__main__":
     relay = Interface()
 
     connection = relay.get(D.google.service_account_info)
-    dataset_id = relay.get(D.google.dataset_id)
+    dataset_id = relay.get(D.dataset_id)
     name = relay.get(D.name)
     location = relay.get(D.location)
     description = relay.get(D.description)
