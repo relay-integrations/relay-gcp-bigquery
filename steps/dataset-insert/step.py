@@ -38,6 +38,7 @@ def insert_dataset():
 
     name = relay.get(D.name)
     location = relay.get(D.location)
+    description = relay.get(D.description)
 
     if not id:
         print("Missing `id` parameter on step configuration.")
@@ -59,8 +60,11 @@ def insert_dataset():
             'datasetId': name,
         }
     }
+
     if location is not None:
         body['location'] = location
+    if description is not None:
+        body['description'] = description
 
     dataset = do_insert_dataset(bigquery, project_id, body)
 
@@ -72,6 +76,7 @@ def insert_dataset():
         "id",
         "selfLink",
         "datasetReference",
+        "description",
         "defaultTableExpirationMs",
         "defaultPartitionExpirationMs",
         #"labels", #TODO do we want this?

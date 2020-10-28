@@ -54,6 +54,9 @@ schemas:
     name:
       type: string,
       description: The name of the dataset
+    description:
+      type: string,
+      description: The description of the dataset
     location:
       type: string,
       description: The location of the dataset
