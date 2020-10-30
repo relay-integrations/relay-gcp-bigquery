@@ -106,12 +106,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print("Success!\n")
-    print("{:<80} {:<30} {:<30}".format('ID', 'TABLE EXPIRATION', 'LOCATION'))
-    print("{:<80} {:<30} {:<30}".format(
-        dataset['id'],
-        dataset['defaultTableExpirationMs'],
-        dataset['location'],
-    ))
     print('\nAdding dataset to the output `dataset`')
     print(dataset)
     relay.outputs.set("dataset", dataset)

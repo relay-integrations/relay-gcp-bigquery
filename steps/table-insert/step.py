@@ -103,12 +103,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     print("Success!\n")
-    print("{:<80} {:<30} {:<30}".format('ID', 'SELFLINK', 'LOCATION'))
-    print("{:<80} {:<30} {:<30}".format(
-        table['id'],
-        table['selfLink'],
-        table['location'],
-    ))
     print('\nAdding table to the output `table`')
     print(table)
     relay.outputs.set("table", table)
