@@ -1,0 +1,117 @@
+apiVersion: integration/v1
+kind: Step
+name: datatransfer-config-create
+version: 1
+summary: Create a TransferConfig in BigQuery
+
+description: |
+  This step creates a TransferConfig in BigQuery in the specified project
+
+build:
+  apiVersion: build/v1
+  kind: Docker
+
+publish:
+  repository: relaysh/gcp-bigquery-step-datatransfer-config-create
+
+examples:
+- summary: Create a TransferConfig
+  apiVersion: v1
+  kind: Workflow
+  parameters:
+    dataset_id:
+      description: The name of the dataset
+      default: customer-data
+    destination_table:
+      description: The name of the destination table
+      default: customer-foo
+    display_name:
+      description: The description of the TransferConfig
+    schedule:
+      description: The schedule of the TransferConfig
+    replace:
+      description: Whether the TransferConfig should replace instead of append
+      default: false
+    query:
+      description: The query of the TransferConfig
+  steps:
+  - name: 
+    image: relaysh/gcp-bigquery-step-table-insert
+    spec:
+      google:
+        service_account_info: !Connection { type: gcp, name: my-gcp-account }
+      name: !Parameter table_name
+      dataset_id: !Parameter dataset_name
+      location: 'US'
+
+schemas:
+  spec:
+    $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      google:
+        type: object,
+        description: A mapping of GCP account configuration.,
+        properties:
+          service_account_info:
+            type: object,
+            x-relay-connectionType: gcp,
+            description: A Relay Google Cloud Platform (GCP) connection to use,
+              properties:
+                serviceAccountKey:
+                  type: string
+              required:
+              - serviceAccountKey
+          required:
+          - service_account_info
+    dataset_id:
+      type: string
+      description: The name of the dataset
+    destination_table:
+      type: string
+      description: The name of the table
+    display_name:
+      type: string
+      description: The display name of the TransferConfig
+    schedule:
+      type: string
+      description: The schedule of the TransferConfig
+    replace:
+      type: boolean
+      description: Whether the TransferConfig should replace instead of append
+      default: false
+    query:
+      description: The query of the TransferConfig
+    required:
+    - google,
+    - dataset_id
+    - destination_table
+    - schedule
+    - query
+    additionalProperties: false
+ outputs:
+   $schema: http://json-schema.org/draft-07/schema#
+    type: object
+    properties:
+      name:
+        type: string
+        description: The full name referencing the transfer config
+      destinationDatasetId: harry
+        type: string
+        description: The name of the destination dataset
+      displayName: wooooork
+        type: string
+        description: The name of the transfer config
+      schedule: every 6 hours
+        type: string
+        description: The schedule of the transfer config
+      nextRunTime: 2020-10-30T23:47:00Z
+        type: string
+        format: date-time
+        desscription: The time of the next scheduled query run
+      params:
+        type: object
+        description: The params submitted during the creation of the transfer config
+      datasetRegion: us
+        type: string
+        description: The dataset GCP region
