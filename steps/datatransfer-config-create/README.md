@@ -1,3 +1,3 @@
-# gcp-bigquery-step-table-insert
+# gcp-bigquery-step-datatransfer-config-create
 
-This GCP BigQuery step container inserts a new table with a given name. For more information, check out [GCP documentation here](https://cloud.google.com/bigquery/docs/reference/rest/v2/tables/insert).
+This GCP BigQuery step container creates a new transferConfig for the GCP BigQuery Data Transfer Service. This is most often used for scheduled queries. For more information, check out [GCP BigQuery Data Transfer Service documentation here](https://cloud.google.com/bigquery-transfer/docs/introduction).

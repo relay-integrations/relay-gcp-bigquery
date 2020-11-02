@@ -36,13 +36,17 @@ examples:
       description: The query of the TransferConfig
   steps:
   - name: 
-    image: relaysh/gcp-bigquery-step-table-insert
+    image: relaysh/gcp-bigquery-step-datatransfer-config-create
     spec:
       google:
         service_account_info: !Connection { type: gcp, name: my-gcp-account }
       name: !Parameter table_name
       dataset_id: !Parameter dataset_name
-      location: 'US'
+      destination_table: !Parameter destination_table
+      display_name: !Parameter display_name
+      schedule: !Parameter schedule
+      replace: !Parameter replace
+      query: !Parameter query
 
 schemas:
   spec:
