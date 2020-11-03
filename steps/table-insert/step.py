@@ -2,10 +2,20 @@
 
 import json
 import sys
+import requests
 import googleapiclient.discovery
 
 from google.oauth2 import service_account
 from relay_sdk import Interface, Dynamic as D
+
+
+def get_or_default(path, default=None):
+    try:
+        return relay.get(path)
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 422:
+            return default
+        raise
 
 
 def slice(orig, keys):
@@ -87,8 +97,8 @@ if __name__ == "__main__":
     connection = relay.get(D.google.service_account_info)
     dataset_id = relay.get(D.dataset_id)
     name = relay.get(D.name)
-    description = relay.get(D.description)
-    schema = relay.get(D.schema)
+    description = get_or_default(D.description, None)
+    schema = get_or_default(D.schema, None)
 
     if not dataset_id:
         print("Missing `dataset_id` parameter on step configuration.")

@@ -2,10 +2,20 @@
 
 import json
 import sys
+import requests
 import googleapiclient.discovery
 
 from google.oauth2 import service_account
 from relay_sdk import Interface, Dynamic as D
+
+
+def get_or_default(path, default=None):
+    try:
+        return relay.get(path)
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 422:
+            return default
+        raise
 
 
 def slice(orig, keys):
@@ -93,9 +103,9 @@ if __name__ == "__main__":
     connection = relay.get(D.google.service_account_info)
     dataset_id = relay.get(D.dataset_id)
     destination_table = relay.get(D.destination_table)
-    display_name = relay.get(D.display_name)
+    display_name = get_or_default(D.display_name, None)
     schedule = relay.get(D.schedule)
-    replace = relay.get(D.replace)
+    replace = get_or_default(D.replace, False)
     query = relay.get(D.query)
 
     if not dataset_id:

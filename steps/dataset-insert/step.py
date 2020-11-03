@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 
-import json, sys
+import json, sys, requests
 import googleapiclient.discovery
 
 from google.oauth2 import service_account
 from relay_sdk import Interface, Dynamic as D
+
+
+def get_or_default(path, default=None):
+    try:
+        return relay.get(path)
+    except requests.exceptions.HTTPError as e:
+        if e.response.status_code == 422:
+            return default
+        raise
 
 
 def slice(orig, keys):
@@ -37,8 +46,8 @@ def insert_dataset():
     ]
 
     name = relay.get(D.name)
-    location = relay.get(D.location)
-    description = relay.get(D.description)
+    location = get_or_default(D.location, None)
+    description = get_or_default(D.description, None)
 
     if not name:
         print("Missing `name` parameter on step configuration.")
