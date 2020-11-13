@@ -52,8 +52,7 @@ def get_client(product, version, credentials):
     return googleapiclient.discovery.build(product, version, credentials=credentials)
 
 
-def create_transfer_config(connection, dataset_id, destination_table, display_name, schedule, replace, query):
-    credentials = get_credentials(connection)
+def create_transfer_config(credentials, project, dataset_id, destination_table, display_name, schedule, replace, query):
     client = get_client('bigquerydatatransfer', 'v1', credentials).projects().transferConfigs()
 
     if replace is True:
@@ -61,7 +60,6 @@ def create_transfer_config(connection, dataset_id, destination_table, display_na
     else:
         write_disposition = 'WRITE_APPEND'
 
-    project_id = credentials.project_id
     body = {
         'destinationDatasetId': dataset_id,
         'displayName': display_name,
@@ -76,7 +74,7 @@ def create_transfer_config(connection, dataset_id, destination_table, display_na
     }
 
     print("Creating transferConfig with %s..." % body)
-    result = client.create(parent='projects/%s' % project_id, body=body).execute()
+    result = client.create(parent='projects/%s' % project, body=body).execute()
     print("Result:")
     print(result)
 
@@ -100,7 +98,8 @@ def create_transfer_config(connection, dataset_id, destination_table, display_na
 if __name__ == "__main__":
     relay = Interface()
 
-    connection = relay.get(D.google.service_account_info)
+    credentials = get_credentials(relay.get(D.google.connection))
+    project = get_or_default(D.google.project, credentials.project_id)
     dataset_id = relay.get(D.dataset_id)
     destination_table = relay.get(D.destination_table)
     display_name = get_or_default(D.display_name, None)
@@ -108,6 +107,9 @@ if __name__ == "__main__":
     replace = get_or_default(D.replace, False)
     query = relay.get(D.query)
 
+    if not project:
+        print("Missing `google.project` parameter on step configuration and no project was found in the connection.")
+        sys.exit(1)
     if not dataset_id:
         print("Missing `dataset_id` parameter on step configuration.")
         sys.exit(1)
@@ -126,7 +128,7 @@ if __name__ == "__main__":
     if not replace:
         replace = False
 
-    transfer_config = create_transfer_config(connection, dataset_id, destination_table, display_name, schedule, replace, query)
+    transfer_config = create_transfer_config(credentials, project, dataset_id, destination_table, display_name, schedule, replace, query)
     if transfer_config is None:
         print('transferConfig failed insert!')
         sys.exit(1)
@@ -135,4 +137,3 @@ if __name__ == "__main__":
     print('\nAdding transferConfig to the output `transferConfig`')
     print(transfer_config)
     relay.outputs.set("transferConfig", transfer_config)
-

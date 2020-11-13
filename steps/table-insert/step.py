@@ -52,14 +52,12 @@ def get_client(product, version, credentials):
     return googleapiclient.discovery.build(product, version, credentials=credentials)
 
 
-def insert_table(connection, dataset_id, name, schema, description):
-    credentials = get_credentials(connection)
+def insert_table(credentials, project, dataset_id, name, schema, description):
     client = get_client('bigquery', 'v2', credentials)
 
-    project_id = credentials.project_id
     body = {
         'tableReference': {
-            'projectId': project_id,
+            'projectId': project,
             'datasetId': dataset_id,
             'tableId': name,
         }
@@ -69,7 +67,7 @@ def insert_table(connection, dataset_id, name, schema, description):
         body['description'] = description
 
     print("Inserting table...")
-    result = client.tables().insert(projectId=project_id, datasetId=dataset_id, body=body).execute()
+    result = client.tables().insert(projectId=project, datasetId=dataset_id, body=body).execute()
     print("Result:")
     print(result)
 
@@ -94,12 +92,16 @@ def insert_table(connection, dataset_id, name, schema, description):
 if __name__ == "__main__":
     relay = Interface()
 
-    connection = relay.get(D.google.service_account_info)
+    credentials = get_credentials(relay.get(D.google.connection))
+    project = get_or_default(D.google.project, credentials.project_id)
     dataset_id = relay.get(D.dataset_id)
     name = relay.get(D.name)
     description = get_or_default(D.description, None)
     schema = get_or_default(D.schema, None)
 
+    if not project:
+        print("Missing `google.project` parameter on step configuration and no project was found in the connection.")
+        sys.exit(1)
     if not dataset_id:
         print("Missing `dataset_id` parameter on step configuration.")
         sys.exit(1)
@@ -107,7 +109,7 @@ if __name__ == "__main__":
         print("Missing `name` parameter on step configuration.")
         sys.exit(1)
 
-    table = insert_table(connection, dataset_id, name, schema, description)
+    table = insert_table(credentials, project, dataset_id, name, schema, description)
     if table is None:
         print('table failed insert!')
         sys.exit(1)
