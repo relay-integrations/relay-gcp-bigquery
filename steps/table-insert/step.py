@@ -66,6 +66,12 @@ def insert_table(credentials, project, dataset_id, name, schema, description):
     if description is not None:
         body['description'] = description
 
+
+    if schema is not None:
+        body['schema'] = {
+            'fields': schema
+        }
+
     print("Inserting table...")
     result = client.tables().insert(projectId=project, datasetId=dataset_id, body=body).execute()
     print("Result:")
@@ -108,6 +114,15 @@ if __name__ == "__main__":
     if not name:
         print("Missing `name` parameter on step configuration.")
         sys.exit(1)
+    if schema is not None:
+        if not isinstance(schema, str):
+            print("Incorrect `schema` type; must be in the BigQuery 'edit as text' string.")
+            sys.exit(1)
+        try:
+            schema = json.loads(schema)
+        except ValueError as e:
+            print("Incorrect `schema` format; there was an error parsing the schema definition: %s" % e)
+            sys.exit(1)
 
     table = insert_table(credentials, project, dataset_id, name, schema, description)
     if table is None:
